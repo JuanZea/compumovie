@@ -1,8 +1,10 @@
 # DOJO React Native
-
+* Juan Fernando Lopera
+* Eliana Janneth Puerta
+* Juan David Zea
 
 # Introducción - Compumovie
-¡Bienvenido al proyecto CompuMovie! esta una aplicación desarrollada con React Native que permite a los usuarios buscar posters de películas utilizando un su nombre original como referencia. Este proyecto está diseñado como un dojo para guiar a los desarrolladores paso a paso en la creación y estructuración de una aplicación React Native utilizando Expo.
+¡Bienvenido al proyecto CompuMovie! esta una aplicación desarrollada con React Native que permite a los usuarios buscar posters de películas utilizando su nombre original como referencia. Este proyecto está diseñado como un dojo para guiar a los desarrolladores paso a paso en la creación y estructuración de una aplicación React Native utilizando Expo.
 
 > **Requisitos:** Antes de comenzar, asegúrate de tener instalado [Node.js](https://nodejs.org/dist/v20.9.0/node-v20.9.0-x64.msi) y npm en tu sistema.
 
@@ -62,7 +64,8 @@ Para mantener el código organizado y fácil de mantener, se recomienda dividirl
    - `styles` → Definición de los estilos usados en la aplicación
 3. Por último crearemos un archivo llamado `Main.jsx`
 
-Ahora, procederemos a crear el archivo `colorPalette.js` en `constants`, allí definiremos los colores en hexadecimal que serán usados a lo largo de la aplicación de la siguiente manera:
+### Directorio `constants`
+Procederemos a crear el archivo `colorPalette.js`, allí definiremos los colores en hexadecimal que serán usados a lo largo de la aplicación de la siguiente manera:
 
 ```js
 export const ColorPalette = {
@@ -75,7 +78,7 @@ export const ColorPalette = {
 ```
 *Podrás cambiar estos colores con total libertad.*
 
-Luego, en el mismo directorio de `constants` crearemos el archivo `env.js`, el cuál permitirá hacer un uso más sencillo de las variables de entorno.
+Luego crearemos el archivo `env.js`, el cuál permitirá acceder de manera más sencilla a las variables de entorno.
 
 ```js
 export const Env = {
@@ -83,19 +86,20 @@ export const Env = {
     API_KEY: process.env.EXPO_PUBLIC_API_KEY,
 };
 ```
-Después, sin cambiar de directorio crearemos el archivo `expo.js` para exportar desde el mismo directorio las constantes de Expo que serán utiles para la creación de algunos estilos.
+Crearemos el archivo `expo.js` para exportar desde el mismo directorio las constantes de Expo que serán utiles para la creación de algunos estilos.
 
 ```js
 export { default as Expo } from 'expo-constants';
 ```
 
-Por último en este directorio, crearemos un archivo llamado `index.js` que será utilizado para exportar y facilitar el uso de los archivos contenidos `constants` en directorios externos 
+Por último crearemos un archivo llamado `index.js` que será utilizado para exportar y facilitar el uso de los archivos contenidos `constants` en directorios externos 
 ```js
 export * from './env';
 export * from './colorPalette';
 export * from './expo';
 ```
 
+### Directorio `services`
 Ahora, cambiaremos de directorio y nos dirigimos a `services` y creamos un archivo llamado `api.js`
 
 Allí importaremos `Env` de `constants` y `Alert` de la librería de react-native de la siguiente manera:
@@ -128,137 +132,258 @@ Le agregamos unas validaciones que nos permitan comprobar si se logró una corre
         else Alert.alert('Error', 'Película no encontrada', [{ text: 'OK' }]);
     } else Alert.alert('Error', 'Error de conexión', [{ text: 'OK' }]);
 ```
+### Directorio `styles`
+Ahora, empezaremos a crear los diferentes estilos que tendrá la aplicación, por ende dentro del directorio de `styles` crearemos un archivo llamado `poster.js`, en el que importaremos la paleta de colores definida anteriormente y una hoja de estilos de la librería de react native
 
-
--- Estilos
-
-
--- Componentes
-
-
-
-CompuMoviePosterFinder/
-├── src/
-│   ├── components/
-│   │   └── SearchBar.js
-│   ├── assets/
-│   │   └── (your static files like images and logos)
-│   ├── screens/
-│   │   └── HomeScreen.js
-│   ├── utils/
-│   │   └── (any utility files you have)
-│   └── App.js
-├── styles/
-│   └── globalStyles.js
-├── .env
-├── .gitignore
-├── app.json
-├── babel.config.js
-├── package.json
-└── README.md
+```js
+import { StyleSheet } from 'react-native';
+import { ColorPalette } from '../constants';
 ```
 
-**Please note:** For brevity, not all files and folders are listed.
+A continuación, creamos la hoja de estilos y agregamos los estilos que tendrá el poster que cargará las imágenes que serán traidas desde la API
+```js
+export const posterStyles = StyleSheet.create({
+    container: {
+        width: 220,
+        height: 320,
+        borderWidth: 10,
+        borderColor: ColorPalette.PRIMARY,
+        backgroundColor: ColorPalette.PALE,
+        marginBottom: 'auto',
+        marginTop: 'auto',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    text: {
+        color: ColorPalette.PRIMARY,
+        textAlign: 'center',
+        fontWeight: '700',
+        fontSize: 20,
+    },
+});
+```
 
-## Prerequisites
+Después, en el mismo directorio creamos un archivo llamado `searchControl.js`
 
-Before you begin, ensure you have met the following requirements:
+Realizamos las mismas importaciones que se hizo en el paso anterior
+```js
+import { StyleSheet } from 'react-native';
+import { ColorPalette } from '../constants';
+```
 
-- Node.js installed on your system.
-- Expo CLI installed globally (`npm install -g expo-cli`).
-- An API key from a movie database service like OMDB or TheMovieDB (for fetching movie posters).
+Creamos la hoja de estilos que será usada para el input de búsqueda en el que se ingresará el nombre de la película.
+```js
+export const searchControlStyles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        gap: 16,
+        marginTop: 'auto',
+        width: '100%',
+        padding: 16,
+        backgroundColor: ColorPalette.SECONDARY,
+    },
+    input: {
+        height: 40,
+        borderWidth: 1,
+        padding: 10,
+        flex: 1,
+        backgroundColor: ColorPalette.BOARD,
+        borderRadius: 4,
+    },
+    button: {
+        borderColor: ColorPalette.PRIMARY,
+        borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        backgroundColor: ColorPalette.ACTION,
+    },
+});
+```
+Volveremos a realizar los importes de la paleta de colores y la hoja de estilos, adicionalmente exportaremos las constantes de Expo.
+```js
+import { StyleSheet } from 'react-native';
+import { ColorPalette, Expo } from '../constants';
+```
 
-## Installation
+Definimos la hoja de estilo y haremos uso de la constante de Expo para que la aplicación no se sobreponga sobre la barra de notificaciones que tienen los smartphone la parte superior de la pantalla.
+```js
+export const mainStyles = StyleSheet.create({
+    container: {
+        paddingTop: Expo.statusBarHeight,
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: ColorPalette.BOARD,
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: ColorPalette.PRIMARY,
+    },
+});
+```
 
-1. Clone the repository to your local machine:
+Por último, crearemos el archivo `index.js` que nos permitirá exportar los estilos creados para que estos puedan ser usados por los componentes que serán creados más adelante.
 
-   ```
-   git clone https://github.com/your-username/CompuMoviePosterFinder.git
-   ```
 
-2. Navigate to the cloned directory:
+```js
+export * from './env';
+export * from './colorPalette';
+export * from './expo';
+```
 
-   ```
-   cd CompuMoviePosterFinder
-   ```
+### Directorio `components`
 
-3. Install the dependencies:
+Empezaremos creando el componente del poster de la película, lo llamaremos `Poster.jsx`
 
-   ```
-   npm install
-   ```
+Realizamos la importación de los estilos del poster que generamos en el directorio de `styles`, entre otras importaciones que serán necesarias para el componente.
 
-4. Set up your `.env` file with the required API keys:
+```js
+import { posterStyles } from '../styles';
+import { useState, useEffect } from 'react';
+import { Text, View, Image } from 'react-native';
+```
 
-   ```
-   EXPO_PUBLIC_API_URL=your_api_endpoint_here
-   EXPO_PUBLIC_API_KEY=your_api_key_here
-   ```
+Luego creamos el componente y le agregamos un parámetro llamado `movies` que será el que reciba la información de las películas que serán mostradas en el poster.
 
-5. Start the Expo server:
+```js
+const Poster = ({ movies }) => {
+    const [index, setIndex] = useState(0);
+    const [activeMovie, setActiveMovie] = useState();
+    
+    useEffect(() => {
+        if (!movies || movies.length === 0) return;
 
-   ```
-   expo start
-   ```
+        setActiveMovie(movies[index]);
 
-## Usage
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => {
+                const nextIndex = (prevIndex + 1) % movies.length;
+                setActiveMovie(movies[nextIndex]);
+                return nextIndex;
+            });
+        }, 5000);
 
-### Running the Application
+        return () => clearInterval(interval);
+    }, [movies]);
 
-After installation, the Expo developer tools should open in your browser. You can then:
+    // Retornamos la estructura del componente
+};
+```
 
-- Run the app in an iOS or Android simulator.
-- Scan the QR code with your Expo Go app on your physical device.
+Estrucutra del componente:
+```html
+<View style={posterStyles.container}>
+    {activeMovie ? (
+        <Image source={{ uri: activeMovie.Poster }} style={{ width: 200, height: 300 }} />
+    ) : (
+        <Text style={posterStyles.text}>{activeMovie ? activeMovie : 'Sin datos de película'}</Text>
+    )}
+</View>
+```
 
-### Application Walkthrough
+Por último realizamos el exporte del componente.
+```js
+export default Poster;
+```
 
-1. **Home Screen**:
-   - You will be greeted by the "CompuMovie" title.
-   - Below the title, there's a view area representing where the movie poster will be displayed.  
-     _Image description: View of the home screen showing a white view placeholder for the movie poster._
+Ahora, crearemos el componente que renderizará el input y el botón que permitirá realizar ingresar el título de la película, lo llamaremos `SearchControl.jsx`. Como se ha hecho hasta este momento iniciaremos realizando los imports correspondientes, importamos el estilo diseñado desde `styles`, la paleta de colores de `constants`, el "Pressable" que permite darle funcionalidad al botón entre otras importaciones.
 
-2. **Search for a Movie**:
-   - Below the poster placeholder, there's an input field where you can type the name of the movie you're looking for.
-   - A 'Search Movie' button is provided to initiate the search.
-     _Image description: View of the input field and the search button._
+```js
+import { searchControlStyles } from '../styles';
+import { Text, View, TextInput, Pressable } from 'react-native';
+import { useState } from 'react';
+import { ColorPalette } from '../constants';
+```
 
-3. **Displaying Results**:
-   - Upon searching, if a movie is found, its poster will be displayed in the placeholder area.
-   - If no movie is found, an alert will notify you.
-     _Image description: The view area now displays the fetched movie poster or an alert message._
+Luego creamos el componente y le agregamos un parámetro llamado `onSearch` que será el que reciba la información de las películas que serán mostradas en el poster.
 
-### Code Structure
+```js
+const SearchControl = ({ onSearch }) => {
+    const [input, setInput] = useState();
 
-- `App.js`:
-  - This is the entry point of your application which contains the main logic of the app.
+    // Retornamos la estructura del componente
+};
+```
 
-- `src/components/SearchBar.js`:
-  - A component that encapsulates the input field and search button logic.
+Estrucutra del componente:
+```html
+<View style={searchControlStyles.container}>
+    <TextInput style={searchControlStyles.input} onChangeText={(text) => setInput(text)} value={input} />
 
-- `src/screens/HomeScreen.js`:
-  - The main screen of the app which uses the `SearchBar` component and displays the movie poster.
+    <Pressable android_ripple={{ color: ColorPalette.PRIMARY }} style={searchControlStyles.button} onPress={() => onSearch(input)}>
+        <Text
+            style={{
+                color: ColorPalette.PRIMARY,
+                fontWeight: 'bold',
+            }}
+        >
+            Buscar Película
+        </Text>
+    </Pressable>
+</View>
+```
 
-- `styles/globalStyles.js`:
-  - Contains all the global styles used across the app.
+Por último realizamos el exporte del componente para poder ser reutilizado en distintos lugares si así lo deseamos.
+```js
+export default SearchControl;
+```
 
-## Customization
+### Directorio `src`
+El contenido del archivo `Main.jsx` será el siguiente:
+```js
+import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { mainStyles } from './styles';
+import { api } from './services/api';
+import Poster from './components/Poster';
+import SearchControl from './components/SearchControl';
 
-You can easily customize the color scheme, add more functionality like fetching additional movie details, or handle different API responses by modifying the corresponding files.
+export default function App() {
+    const [movies, setMovies] = useState();
 
-## Contributing
+    const searchMovie = async (name) => {
+        const moviesData = await api.getMovies(name);
+        setMovies(moviesData);
+    };
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+    return (
+        <View style={mainStyles.container}>
+            <Text style={mainStyles.title}>CompuMovie</Text>
 
-## License
+            <Poster movies={movies} />
 
-[MIT](https://choosealicense.com/licenses/mit/)
+            <SearchControl onSearch={searchMovie} />
+        </View>
+    );
+}
+```
 
----
+En este componente estamos importando los estilos que definimos en el directorio de `styles`, el componente `Poster` y `SearchControl` que creamos en el directorio de `components` y el método `getMovies` que creamos en el directorio de `services`, para contruir el componente principal de la aplicación.
 
-This README provides you with a clear understanding of the CompuMovie Poster Finder project. Follow each step carefully to ensure the setup is successful. Happy coding!
+Como paso final en la carpeta raíz del proyecto vamos al archivo `App.js` y reemplazamos su contenido actual por:
+```js
+import Main from './src/Main';
 
-**End of README.md**
+export default function App() {
+    return <Main />;
+}
+```
 
----
+## Ejecución de la aplicación
 
-Please replace the placeholders with the actual image descriptions and links to images as required in your project documentation.
+Para ejecutar la aplicación debes ejecutar el siguiente comando en la consola:
+```bash
+npm start
+```
+
+Esto mostrará en la consola un código QR que podrás escanear con la aplicación de Expo Go en tu smartphone.
+
+* App android: https://play.google.com/store/apps/details?id=host.exp.exponent
+* App iOS: https://apps.apple.com/us/app/expo-go/id982107779
+
+![console_qr](/assets/console_qr.png)
+
+![app](/assets/app.png)
